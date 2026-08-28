@@ -1,0 +1,103 @@
+---
+layout: default
+---
+
+<div class="page-with-sidebar">
+<div class="camp-page">
+
+  <!-- 브레드크럼 -->
+  <nav class="breadcrumb" aria-label="위치">
+    <a href="/">홈</a>
+    <span>›</span>
+    <a href="/search/?sido={{ page.sido | uri_escape }}">{{ page.sido }}</a>
+    <span>›</span>
+    <span>{{ page.marketName }}</span>
+  </nav>
+
+  <div class="camp-header">
+    <div class="camp-tags">
+      <span class="tag tag-type">📍 {{ page.sido }}</span>
+      <span class="tag tag-safe">🎫 가맹점 {{ page.merchantCount }}곳</span>
+    </div>
+    <h1 class="camp-title">{{ page.marketName }}</h1>
+    <div class="camp-info-row">
+      <span class="camp-info-icon">💳</span>
+      <span>지류형(종이) 가능 {{ page.paperCount }}곳 · 디지털형(카드/모바일) 가능 {{ page.digitalCount }}곳</span>
+    </div>
+  </div>
+
+  <!-- 광고 -->
+  <div class="ad-slot">
+    {% include ad.html %}
+  </div>
+
+  <!-- 안내 -->
+  <div class="camp-section trust-box">
+    <p style="font-size:.88rem;color:#7C2D12;line-height:1.7;">
+      💡 소상공인시장진흥공단이 제공하는 공공데이터 기준입니다. 가맹 여부·환전 한도는 수시로 바뀔 수 있으니, 큰 금액을 쓰기 전엔 매장에 미리 전화로 확인하는 것을 추천합니다.
+    </p>
+  </div>
+
+  <!-- 가맹점 목록 -->
+  <div class="camp-section">
+    <h2>🏪 가맹점 목록 ({{ page.merchantCount }}곳)</h2>
+    <input type="text" id="filterInput" class="search-input" style="border:1px solid #E5E7EB;margin-bottom:14px;" placeholder="이 시장 안에서 가게 이름으로 다시 찾기...">
+    <div id="merchantList" style="display:grid;gap:8px;">
+      {% for merchant in page.merchants %}
+      <a class="merchant-row" href="/store/{{ merchant.slug }}/" data-name="{{ merchant.storeName | downcase }}" style="text-decoration:none;color:inherit;">
+        <div class="merchant-name">{{ merchant.storeName }}</div>
+        {% if merchant.items and merchant.items != "" %}<div class="merchant-items">{{ merchant.items }}</div>{% endif %}
+        <div class="merchant-badges">
+          {% if merchant.paper %}<span class="mini-badge">📄 지류</span>{% endif %}
+          {% if merchant.digital %}<span class="mini-badge mini-badge-digital">💳 디지털</span>{% endif %}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    <p id="noResult" style="display:none;color:#6B7280;padding:16px 0;">일치하는 가게가 없습니다.</p>
+  </div>
+
+  <!-- 광고 -->
+  <div class="ad-slot">
+    {% include ad.html %}
+  </div>
+
+  <!-- 전국 검색으로 -->
+  <div class="crosslink-box">
+    <a href="/search/" class="crosslink-link">
+      🔍 다른 지역·다른 가게 검색하기 →
+    </a>
+  </div>
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "{{ page.marketName | escape }}",
+    "address": {
+      "@type": "PostalAddress",
+      "addressRegion": "{{ page.sido | escape }}",
+      "addressCountry": "KR"
+    }
+  }
+  </script>
+
+</div>
+<aside class="tool-sidebar"></aside>
+</div>
+
+<script>
+const input = document.getElementById('filterInput');
+const rows = Array.from(document.querySelectorAll('.merchant-row'));
+input.addEventListener('input', () => {
+  const q = input.value.trim().toLowerCase();
+  let shown = 0;
+  rows.forEach(r => {
+    const match = !q || r.dataset.name.includes(q);
+    r.style.display = match ? '' : 'none';
+    if (match) shown++;
+  });
+  document.getElementById('noResult').style.display = shown === 0 ? 'block' : 'none';
+});
+</script>

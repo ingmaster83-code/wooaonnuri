@@ -1,0 +1,78 @@
+---
+layout: default
+title: 온누리상품권 가맹점 검색
+description: 가게 이름, 시장·상점가명, 지역명, 취급품목으로 온누리상품권 가맹점을 검색하세요.
+---
+
+<div class="section">
+  <nav class="breadcrumb"><a href="/">홈</a> <span>›</span> <span>가맹점 검색</span></nav>
+  <h1 style="font-size:1.6rem;font-weight:800;margin:20px 0 24px;">🔍 온누리상품권 가맹점 검색</h1>
+
+  <div class="search-wrap" style="max-width:100%;margin-bottom:24px;">
+    <input type="text" id="searchInput" class="search-input"
+           placeholder="가게 이름, 시장명, 지역명 검색..."
+           autocomplete="off" style="border:1px solid #E5E7EB;">
+    <button class="search-btn" onclick="doSearch()">검색</button>
+  </div>
+
+  <p id="searchStatus" style="color:#6B7280;font-size:.87rem;margin-bottom:16px;">검색어를 입력하세요.</p>
+  <div class="camp-grid" id="campGrid"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+<script>
+let fuse = null;
+let allMerchants = [];
+
+(async () => {
+  const resp = await fetch('/search_index.json');
+  allMerchants = await resp.json();
+  fuse = new Fuse(allMerchants, {
+    keys: ['n', 'mk', 'sido', 'i'],
+    threshold: 0.3,
+    minMatchCharLength: 1,
+  });
+  document.getElementById('searchStatus').textContent = `총 ${allMerchants.length.toLocaleString()}개 가맹점 검색 가능`;
+
+  const params = new URLSearchParams(location.search);
+  const q = params.get('q');
+  const sido = params.get('sido');
+  if (q) {
+    document.getElementById('searchInput').value = q;
+    doSearch();
+  } else if (sido) {
+    document.getElementById('searchInput').value = sido;
+    doSearch();
+  }
+})();
+
+function doSearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  if (!q || !fuse) return;
+  const results = fuse.search(q).slice(0, 60);
+  document.getElementById('searchStatus').textContent = `"${q}" 검색 결과: ${results.length}개`;
+  const grid = document.getElementById('campGrid');
+  if (results.length === 0) {
+    grid.innerHTML = '<p style="grid-column:1/-1;color:#6B7280;">검색 결과가 없습니다.</p>';
+    return;
+  }
+  grid.innerHTML = results.map(r => {
+    const f = r.item;
+    return `<a class="camp-card" href="/store/${f.s}/">
+      <div class="camp-card-img-placeholder">🏪</div>
+      <div class="camp-card-body">
+        <div class="camp-card-name">${f.n}</div>
+        <div class="camp-card-loc">📍 ${f.sido} · ${f.mk}</div>
+        <div class="camp-card-tags">
+          ${f.p ? `<span class="tag tag-safe">📄 지류</span>` : ''}
+          ${f.d ? `<span class="tag" style="background:#DBEAFE;color:#1E3A8A;">💳 디지털</span>` : ''}
+        </div>
+      </div>
+    </a>`;
+  }).join('');
+}
+
+document.getElementById('searchInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doSearch();
+});
+</script>

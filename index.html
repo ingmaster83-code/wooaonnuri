@@ -1,0 +1,159 @@
+---
+layout: default
+title: 온누리상품권 가맹점 찾기
+description: 전국 온누리상품권 가맹점 15만여 곳을 가게 이름으로 검색. 시장·상점가별로도 찾아보고, 지류형·디지털형 취급 여부를 확인하세요.
+---
+
+<!-- 히어로 & 검색 -->
+<div class="hero">
+  <h1>🎫 우리 동네 가게, 온누리상품권 될까요?</h1>
+  <p>가게 이름으로 검색하면 바로 확인할 수 있어요</p>
+  <div class="search-wrap">
+    <input type="text" id="searchInput" class="search-input"
+           placeholder="예) 남대문시장, 떡볶이, 정육점..."
+           autocomplete="off" aria-label="온누리상품권 가맹점 검색">
+    <button class="search-btn" onclick="doSearch()">🔍 검색</button>
+  </div>
+</div>
+
+<div class="page-with-sidebar">
+<div>
+<!-- 검색 결과 -->
+<div id="search-results"></div>
+
+<!-- 광고 -->
+<div class="top-ad-bar">
+  {% include ad.html %}
+</div>
+
+<!-- 소개 -->
+<div class="section" style="padding-bottom:0;">
+  <div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:14px;padding:20px 24px;">
+    <p style="color:#7C2D12;line-height:1.8;font-size:.92rem;">
+      💡 <strong>추석·설 선물로 받은 온누리상품권, 어디서 쓸 수 있는지 헷갈리셨죠?</strong>
+      전통시장·상점가의 가맹점 <strong id="totalCount">-</strong>곳을 가게 이름으로 검색해서
+      지류형(종이)·디지털형(카드·모바일) 취급 여부까지 바로 확인하세요.
+    </p>
+  </div>
+</div>
+
+<!-- 지역별 찾기 -->
+<div class="section">
+  <h2 class="section-title">📍 지역별 시장·상점가 찾기</h2>
+  <div class="region-grid">
+    <a href="/search/?sido=서울" class="region-btn"><span class="region-icon">🏙️</span>서울</a>
+    <a href="/search/?sido=경기" class="region-btn"><span class="region-icon">🌆</span>경기</a>
+    <a href="/search/?sido=인천" class="region-btn"><span class="region-icon">⚓</span>인천</a>
+    <a href="/search/?sido=부산" class="region-btn"><span class="region-icon">🌅</span>부산</a>
+    <a href="/search/?sido=대구" class="region-btn"><span class="region-icon">🍑</span>대구</a>
+    <a href="/search/?sido=광주" class="region-btn"><span class="region-icon">🎨</span>광주</a>
+    <a href="/search/?sido=대전" class="region-btn"><span class="region-icon">🏛️</span>대전</a>
+    <a href="/search/?sido=울산" class="region-btn"><span class="region-icon">🏭</span>울산</a>
+    <a href="/search/?sido=세종" class="region-btn"><span class="region-icon">🌿</span>세종</a>
+    <a href="/search/?sido=강원" class="region-btn"><span class="region-icon">🏔️</span>강원</a>
+    <a href="/search/?sido=충북" class="region-btn"><span class="region-icon">📖</span>충북</a>
+    <a href="/search/?sido=충남" class="region-btn"><span class="region-icon">🌊</span>충남</a>
+    <a href="/search/?sido=전북" class="region-btn"><span class="region-icon">🌾</span>전북</a>
+    <a href="/search/?sido=전남" class="region-btn"><span class="region-icon">🐚</span>전남</a>
+    <a href="/search/?sido=경북" class="region-btn"><span class="region-icon">🍎</span>경북</a>
+    <a href="/search/?sido=경남" class="region-btn"><span class="region-icon">🎋</span>경남</a>
+    <a href="/search/?sido=제주" class="region-btn"><span class="region-icon">🌺</span>제주</a>
+  </div>
+</div>
+
+<!-- 광고 -->
+<div class="top-ad-bar">
+  {% include ad.html %}
+</div>
+
+<!-- 가맹점 많은 시장 -->
+<div class="section">
+  <h2 class="section-title">🏪 가맹점 많은 시장·상점가 TOP 12</h2>
+  <div class="camp-grid" id="topMarkets">
+    <p style="color:#6B7280;">로딩 중...</p>
+  </div>
+</div>
+
+</div>
+<aside class="tool-sidebar"></aside>
+</div>
+
+<!-- Fuse.js 검색 -->
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+<script>
+let fuseIndex = null;
+let fuse = null;
+let loading = null;
+
+async function loadIndex() {
+  if (fuseIndex) return;
+  if (loading) return loading;
+  loading = fetch('/search_index.json').then(r => r.json()).then(data => {
+    fuseIndex = data;
+    document.getElementById('totalCount').textContent = fuseIndex.length.toLocaleString();
+    fuse = new Fuse(fuseIndex, {
+      keys: ['n', 'm', 'sido', 'i'],
+      threshold: 0.3,
+      minMatchCharLength: 1,
+    });
+  });
+  return loading;
+}
+
+async function loadTopMarkets() {
+  const resp = await fetch('/top_markets.json');
+  const markets = await resp.json();
+  document.getElementById('topMarkets').innerHTML = markets.map(marketCard).join('');
+}
+
+function marketCard(m) {
+  return `<a class="camp-card" href="/market/${m.slug}/">
+    <div class="camp-card-img-placeholder">🏪</div>
+    <div class="camp-card-body">
+      <div class="camp-card-name">${m.marketName}</div>
+      <div class="camp-card-loc">📍 ${m.sido}</div>
+      <div class="camp-card-tags"><span class="tag tag-safe">🎫 가맹점 ${m.merchantCount}곳</span></div>
+    </div>
+  </a>`;
+}
+
+function doSearch() {
+  const q = document.getElementById('searchInput').value.trim();
+  if (!q) { document.getElementById('search-results').innerHTML = ''; return; }
+  loadIndex().then(() => {
+    const results = fuse.search(q).slice(0, 30);
+    const el = document.getElementById('search-results');
+    if (results.length === 0) {
+      el.innerHTML = '<p style="text-align:center;padding:20px;color:#6B7280;">검색 결과가 없습니다. 가게 이름 일부 또는 지역명으로 다시 검색해보세요.</p>';
+      return;
+    }
+    el.innerHTML = `<div style="max-width:960px;margin:0 auto;padding:0 20px;">
+      <p style="padding:8px 0;font-size:.9rem;color:#6B7280;">"${q}" 검색 결과 ${results.length}개</p>
+      ${results.map(r => searchResultItem(r.item)).join('')}
+    </div>`;
+    el.scrollIntoView({ behavior: 'smooth' });
+  });
+}
+
+function searchResultItem(f) {
+  return `<div class="search-result-item">
+    <a href="/store/${f.s}/">
+      <div class="search-result-thumb" style="background:#FEE2E2;display:flex;align-items:center;justify-content:center;font-size:1.5rem;border-radius:6px;">🏪</div>
+      <div>
+        <div class="search-result-name">${f.n}</div>
+        <div class="search-result-loc">📍 ${f.sido} · ${f.mk}</div>
+        ${f.i ? `<span class="search-result-tag">${f.i}</span>` : ''}
+        ${f.p ? `<span class="search-result-tag" style="background:#FEE2E2;color:#7C2D12;">📄 지류</span>` : ''}
+        ${f.d ? `<span class="search-result-tag" style="background:#DBEAFE;color:#1E3A8A;">💳 디지털</span>` : ''}
+      </div>
+    </a>
+  </div>`;
+}
+
+document.getElementById('searchInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doSearch();
+});
+
+loadIndex();
+loadTopMarkets();
+</script>

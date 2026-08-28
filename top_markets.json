@@ -1,0 +1,74 @@
+[
+  {
+    "marketName": "남대문시장",
+    "slug": "남대문시장-5d153d47",
+    "sido": "서울",
+    "merchantCount": 846
+  },
+  {
+    "marketName": "서문시장2지구 종합상가",
+    "slug": "서문시장2지구-종합상가-d8dabfd6",
+    "sido": "대구",
+    "merchantCount": 768
+  },
+  {
+    "marketName": "부산진시장",
+    "slug": "부산진시장-f93c4ab5",
+    "sido": "부산",
+    "merchantCount": 740
+  },
+  {
+    "marketName": "동산상가",
+    "slug": "동산상가-ba91c7e9",
+    "sido": "대구",
+    "merchantCount": 660
+  },
+  {
+    "marketName": "산본로데오거리(구 산본중심상가)",
+    "slug": "산본로데오거리구-산본중심상가-b341f1c9",
+    "sido": "경기",
+    "merchantCount": 602
+  },
+  {
+    "marketName": "고투몰(강남터미널지하도상점가)",
+    "slug": "고투몰강남터미널지하도상점가-a3380244",
+    "sido": "서울",
+    "merchantCount": 591
+  },
+  {
+    "marketName": "가락몰골목형상점가",
+    "slug": "가락몰골목형상점가-6da21a5b",
+    "sido": "서울",
+    "merchantCount": 580
+  },
+  {
+    "marketName": "마산어시장",
+    "slug": "마산어시장-5708368b",
+    "sido": "경남",
+    "merchantCount": 559
+  },
+  {
+    "marketName": "제주시민속오일시장",
+    "slug": "제주시민속오일시장-78a50552",
+    "sido": "제주",
+    "merchantCount": 551
+  },
+  {
+    "marketName": "충주자유시장",
+    "slug": "충주자유시장-95bcada7",
+    "sido": "충북",
+    "merchantCount": 489
+  },
+  {
+    "marketName": "평택통복시장",
+    "slug": "평택통복시장-a082a9c7",
+    "sido": "경기",
+    "merchantCount": 480
+  },
+  {
+    "marketName": "말바우시장",
+    "slug": "말바우시장-780c93f7",
+    "sido": "광주",
+    "merchantCount": 466
+  }
+]

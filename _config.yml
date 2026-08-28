@@ -1,0 +1,30 @@
+title: 우아온누리 - 온누리상품권 가맹점 찾기
+description: >-
+  전국 온누리상품권 가맹점 15만여 곳을 시장·상점가별로, 가게 이름으로 검색.
+  지류형·디지털형(카드/모바일) 취급 여부까지 한눈에 확인하세요.
+url: "https://wooaonnuri.wooahouse.com"
+baseurl: ""
+lang: ko
+timezone: Asia/Seoul
+author: WooaHouse
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - scripts/
+  - "*.py"
+  - "*.log"
+  - "*.txt"
+  - README.md
+  - .gitignore
+  - vendor/
+  - _rawdata/

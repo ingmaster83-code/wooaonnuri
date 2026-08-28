@@ -1,0 +1,138 @@
+---
+layout: default
+---
+
+<div class="page-with-sidebar">
+<div class="camp-page">
+
+  <!-- 브레드크럼 -->
+  <nav class="breadcrumb" aria-label="위치">
+    <a href="/">홈</a>
+    <span>›</span>
+    <a href="/search/?sido={{ page.sido | uri_escape }}">{{ page.sido }}</a>
+    <span>›</span>
+    <a href="/market/{{ page.marketSlug }}/">{{ page.marketName }}</a>
+    <span>›</span>
+    <span>{{ page.storeName }}</span>
+  </nav>
+
+  <div class="camp-header">
+    <div class="camp-tags">
+      <span class="tag tag-type">📍 {{ page.sido }} · {{ page.marketName }}</span>
+    </div>
+    <h1 class="camp-title">{{ page.storeName }}</h1>
+  </div>
+
+  <!-- 핵심 답변: 결제 가능 여부 -->
+  <div class="camp-section trust-box" style="text-align:center;">
+    <h2 style="border:none;margin-bottom:14px;">💳 온누리상품권 결제 가능 여부</h2>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      {% if page.paper %}
+      <span class="pay-badge pay-yes">📄 지류형(종이) 가능</span>
+      {% else %}
+      <span class="pay-badge pay-no">📄 지류형(종이) 불가</span>
+      {% endif %}
+      {% if page.digital %}
+      <span class="pay-badge pay-yes">💳 디지털형(카드·모바일) 가능</span>
+      {% else %}
+      <span class="pay-badge pay-no">💳 디지털형(카드·모바일) 불가</span>
+      {% endif %}
+    </div>
+    <p style="font-size:.82rem;color:#7C2D12;margin-top:14px;">
+      소상공인시장진흥공단 공공데이터 기준(등록년도 {{ page.year }}). 실제 결제 가능 여부는 매장 사정에 따라 달라질 수 있으니, 방문 전 전화로 확인하시길 권장합니다.
+    </p>
+  </div>
+
+  <!-- 광고 -->
+  <div class="ad-slot">
+    {% include ad.html %}
+  </div>
+
+  <!-- 기본 정보 -->
+  <div class="camp-section">
+    <h2>🏪 가맹점 정보</h2>
+    <table style="width:100%;border-collapse:collapse;font-size:.92rem;">
+      <tr><td style="padding:8px 0;color:#6B7280;width:130px;">가맹점명</td><td>{{ page.storeName }}</td></tr>
+      <tr><td style="padding:8px 0;color:#6B7280;">소속 시장·상점가</td><td><a href="/market/{{ page.marketSlug }}/">{{ page.marketName }}</a></td></tr>
+      <tr><td style="padding:8px 0;color:#6B7280;">소재지</td><td>{{ page.sido }}</td></tr>
+      {% if page.items and page.items != "" %}
+      <tr><td style="padding:8px 0;color:#6B7280;">취급 품목</td><td>{{ page.items }}</td></tr>
+      {% endif %}
+      {% if page.year and page.year != "" %}
+      <tr><td style="padding:8px 0;color:#6B7280;">등록년도</td><td>{{ page.year }}</td></tr>
+      {% endif %}
+    </table>
+  </div>
+
+  <!-- 지도에서 찾기 -->
+  <div class="camp-section">
+    <a href="https://map.kakao.com/?q={{ page.storeName | append: ' ' | append: page.marketName | uri_escape }}" class="reserve-btn">
+      🗺️ 카카오맵에서 위치 찾기
+    </a>
+    <p style="font-size:.8rem;color:#9CA3AF;margin-top:8px;">※ 공공데이터에 상세주소가 없어 가게 이름으로 검색합니다. 동명의 다른 매장이 나올 수 있으니 "{{ page.marketName }}" 근처인지 확인하세요.</p>
+  </div>
+
+  <!-- FAQ -->
+  <div class="camp-section">
+    <h2>❓ 자주 묻는 질문</h2>
+    <details style="margin-bottom:8px;">
+      <summary style="cursor:pointer;font-weight:600;padding:6px 0;">지류형과 디지털형은 뭐가 다른가요?</summary>
+      <p style="padding:6px 0 4px;color:#374151;line-height:1.7;">지류형은 종이로 된 온누리상품권, 디지털형은 온누리상품권 카드나 모바일 앱(제로페이 등)으로 결제하는 방식입니다. 매장마다 취급 방식이 다를 수 있어 위 표시를 확인하고 방문하세요.</p>
+    </details>
+    <details style="margin-bottom:8px;">
+      <summary style="cursor:pointer;font-weight:600;padding:6px 0;">이 정보가 최신인가요?</summary>
+      <p style="padding:6px 0 4px;color:#374151;line-height:1.7;">소상공인시장진흥공단이 연 1회 갱신하는 공공데이터를 기반으로 합니다. 가맹 여부는 매장 사정에 따라 수시로 바뀔 수 있으니, 큰 금액을 쓰기 전에는 매장에 미리 확인하는 것이 안전합니다.</p>
+    </details>
+    <details>
+      <summary style="cursor:pointer;font-weight:600;padding:6px 0;">가맹점 정보에 오류가 있어요</summary>
+      <p style="padding:6px 0 4px;color:#374151;line-height:1.7;">원본 데이터는 소상공인시장진흥공단이 제공합니다. 실제와 다른 정보가 있다면 공공데이터포털(data.go.kr)에 오류 신고를 하시거나, 다음 갱신 시 반영됩니다.</p>
+    </details>
+  </div>
+
+  <!-- 광고 -->
+  <div class="ad-slot">
+    {% include ad.html %}
+  </div>
+
+  <!-- 같은 시장 다른 가맹점 -->
+  {% if page.siblings and page.siblings.size > 0 %}
+  <div class="region-camps">
+    <h2>📍 {{ page.marketName }} 다른 가맹점</h2>
+    <div style="display:grid;gap:8px;">
+      {% for s in page.siblings %}
+      <a class="merchant-row" href="/store/{{ s.slug }}/" style="text-decoration:none;color:inherit;">
+        <div class="merchant-name">{{ s.storeName }}</div>
+        {% if s.items and s.items != "" %}<div class="merchant-items">{{ s.items }}</div>{% endif %}
+      </a>
+      {% endfor %}
+    </div>
+    <p style="margin-top:16px;">
+      <a href="/market/{{ page.marketSlug }}/">{{ page.marketName }} 가맹점 전체 보기 →</a>
+    </p>
+  </div>
+  {% endif %}
+
+  <!-- 전국 검색으로 -->
+  <div class="crosslink-box">
+    <a href="/search/" class="crosslink-link">
+      🔍 다른 가게 검색하기 →
+    </a>
+  </div>
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    "name": "{{ page.storeName | escape }}",
+    "address": {
+      "@type": "PostalAddress",
+      "addressRegion": "{{ page.sido | escape }}",
+      "addressCountry": "KR"
+    }
+  }
+  </script>
+
+</div>
+<aside class="tool-sidebar"></aside>
+</div>
